@@ -1,0 +1,3 @@
+# Tunable thresholds for heuristics (Phase 1 keeps this tiny)
+max_pcap_bytes_soft: 1000000000  # 1 GB warning threshold
+syn_retx_warn: 3                 # when to flag likely loss/firewall
