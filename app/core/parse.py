@@ -77,6 +77,7 @@ def parse_pcap_for_pair(
     }
 
     count = 0
+    matched = 0  # NEW: packets that pass all filters (pair/proto/ports)
     with PcapReader(str(pcap_path)) as pr:
         for pkt in pr:
             count += 1
@@ -137,6 +138,8 @@ def parse_pcap_for_pair(
                 continue
             if dport is not None and pd is not None and ps != dport and pd != dport:
                 continue
+
+            matched += 1  # NEW: it passed all filters
 
             direction = _direction(src, dst, pkt_src, pkt_dst)
 
@@ -207,4 +210,5 @@ def parse_pcap_for_pair(
             # (No extra ICMP block at the bottom; early capture above handles it)
 
     evidence["meta"]["packet_count"] = count
+    evidence["meta"]["matched_packets"] = matched  # NEW
     return evidence
