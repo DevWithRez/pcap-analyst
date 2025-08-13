@@ -1,4 +1,7 @@
 # app/cli.py
+from pathlib import Path
+from app.core.verdicts import compute_connectivity_verdict
+from app.core import report  # uses build_markdown_report()
 import argparse
 import json
 import os
@@ -34,6 +37,17 @@ def main():
     ev_path = out_dir / "evidence.json"
     with ev_path.open("w", encoding="utf-8") as f:
         json.dump(evidence, f, indent=2)
+    # --- NEW: verdict + markdown report ---
+    verdict = compute_connectivity_verdict(evidence)
+
+    md_text = report.build_markdown_report(evidence, verdict)
+
+    md_path = out_dir / "connectivity_report.md"
+    md_path.write_text(md_text, encoding="utf-8")
+
+    print(f"Report written: {md_path}")
+    # --- END NEW ---
+
 
     # console summary
     meta = evidence.get("meta", {})
